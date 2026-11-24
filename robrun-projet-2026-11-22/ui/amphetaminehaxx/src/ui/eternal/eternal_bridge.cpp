@@ -364,7 +364,7 @@ void push()
     SYNC(tracer_glow, b->tracer_glow, 0, 20)
     if ((b->oof_on != 0) != s.oof_on) b->oof_on = s.oof_on ? 1 : 0;
     SYNC(oof_size, b->oof_size, 3, 25)
-    b->oof_radius = std::clamp(b->aa_fov_px, 30, 500);
+    SYNC(oof_radius, b->oof_radius, 30, 500)
     SYNC(oof_style, b->oof_style, 0, 2)
 
     if ((b->world_sun != 0) != s.world_sun) b->world_sun = s.world_sun ? 1 : 0;

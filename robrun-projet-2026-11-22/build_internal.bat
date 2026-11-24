@@ -37,6 +37,9 @@ echo [2/7] game core
 cl %CFLAGS% /c game\rr_game.c /Fo:build\int_game.obj || goto fail
 cl %CFLAGS% /c game\rr_unity.c /Fo:build\int_unity.obj || goto fail
 cl %CFLAGS% /c memory\rr_chain.c /Fo:build\int_chain.obj || goto fail
+cl %CFLAGS% /c game\rr_buildid.c /Fo:build\int_buildid.obj || goto fail
+cl %CFLAGS% /c game\rr_autoupdate.c /Fo:build\int_autoupdate.obj || goto fail
+cl %CFLAGS% /c game\rr_il2cpp_dump.c /Fo:build\int_il2cpp.obj || goto fail
 
 echo [3/7] features
 cl %CFLAGS% /c features\esp\rr_draw.c /Fo:build\int_draw.obj || goto fail
@@ -61,17 +64,21 @@ link /nologo /DLL /DEF:internal\rr_int_export.def /MACHINE:X64 /DEBUG /INCREMENT
   /PDB:build\RobRunInternal.pdb /MAP:build\RobRunInternal.map /OUT:build\RobRunInternal.dll ^
   build\int_wi_icons.obj ^
   build\int_mem.obj build\int_threads.obj build\int_gpu.obj build\int_main.obj build\int_game.obj build\int_unity.obj ^
-  build\int_chain.obj build\int_draw.obj build\int_aim.obj ^
+  build\int_chain.obj build\int_buildid.obj build\int_il2cpp.obj build\int_autoupdate.obj build\int_draw.obj build\int_aim.obj ^
   build\int_los_geom.obj build\int_los_capture.obj build\int_los_runtime.obj build\int_los.obj ^
   build\bridge.obj build\components.obj build\eternal_menu.obj build\imgui.obj build\imgui_draw.obj build\imgui_tables.obj ^
   build\imgui_widgets.obj build\imgui_impl_dx11.obj build\imgui_impl_win32.obj ^
   build\imgui_freetype.obj ^
-  kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib shell32.lib winmm.lib ^
+  kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib shell32.lib winmm.lib bcrypt.lib ^
   d3d11.lib dxgi.lib d2d1.lib dwrite.lib ^
   ui\amphetaminehaxx\vendor\FreeType\freetype.lib || goto fail
 
 echo [7/7] done
 echo BUILD_OK  -^>  build\RobRunInternal.dll
+if exist "..\RobRun_Loader\RobRun_Loader\builds\" (
+  copy /y build\RobRunInternal.dll "..\RobRun_Loader\RobRun_Loader\builds\RobRunInternal.dll" >nul
+  echo COPIED  -^>  loader
+)
 exit /b 0
 
 :fail

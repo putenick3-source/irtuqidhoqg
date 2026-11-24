@@ -5,6 +5,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "rr_los.h"
 #include "rr_los_capture.h"
 #include "memory/rr_mem.h"
@@ -104,7 +105,12 @@ void rr_los_stop(void) {
     InterlockedExchange(&g_running,0);
     if(g_thread){WaitForSingleObject(g_thread,5000);CloseHandle(g_thread);g_thread=NULL;}
 }
-int rr_los_check(RR_V3 start,RR_V3 end) {
+int rr_los_debug(char* out,int cap) {
+    int n=0;AcquireSRWLockShared(&g_lock);
+    DWORD now=GetTickCount();uint64_t world=game_world_addr();
+    n+=snprintf(out+n,cap-n,"world=%llx gworld=%llx st=%d rt=%d sAge=%lu rAge=%lu",world,g_world_id,g_static!=NULL,g_runtime!=NULL,(unsigned long)(now-g_static_time),(unsigned long)(now-g_runtime_time));
+    ReleaseSRWLockShared(&g_lock);return n;
+}int rr_los_check(RR_V3 start,RR_V3 end) {
     int result=RR_LOS_UNKNOWN;
     AcquireSRWLockShared(&g_lock);
     DWORD now=GetTickCount();uint64_t world=game_world_addr();

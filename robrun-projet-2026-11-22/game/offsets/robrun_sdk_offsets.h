@@ -105,7 +105,7 @@
 #define RR_OFF_GAME_MODEL                0xD0u  /* Game.Game.GameModel */
 #define RR_OFF_GAME_MODEL_LEGACY         0xD8u  /* Earlier Game.Game.GameModel */
 #define RR_OFF_BATTLE_ROTATION           0x40u  /* BattleModel.PlayerRotationInput */
-#define RR_RVA_SET_PLAYER_ROTATION       0xC3E130u /* PlayerRotationInputModel.SetRotation(float, float, float) */
+#define RR_RVA_SET_PLAYER_ROTATION       0xC517E0u /* PlayerRotationInputModel.SetRotation(float, float, float) */
 #define RR_RVA_BRAIN_PUSH_CALL           0xDC2DE8u /* ProcessActiveCamera -> PushStateToUnityCamera */
 #define RR_RVA_BRAIN_PUSH_STATE          0xDC2E70u
 #define RR_RVA_BRAIN_OUTPUT_CAMERA       0xDC4B00u
@@ -148,12 +148,12 @@
  * copy of the lens is the active virtual camera's m_Lens, reached off the brain. */
 #define RR_OFF_BRAIN_ACTIVE_VCAM         0xA0u  /* mActiveCameraPreviousFrame (ICinemachineCamera; IL2CPP interface ref = object ptr) */
 #define RR_OFF_VCAM_LENS                 0xB8u  /* CinemachineVirtualCamera.m_Lens (LensSettings; FieldOfView at +0) */
-#define RR_OFF_BRAIN_FOV                 0xB0u  /* float  CameraState.Lens.FieldOfView */
-#define RR_OFF_BRAIN_DUTCH               0xC0u  /* float  CameraState.Lens.Dutch */
-#define RR_OFF_BRAIN_RAW_POS             0xFCu  /* Vector3 CameraState.RawPosition */
-#define RR_OFF_BRAIN_RAW_ROT             0x108u /* Quaternion CameraState.RawOrientation */
-#define RR_OFF_BRAIN_POS_COR             0x128u /* Vector3 CameraState.PositionCorrection */
-#define RR_OFF_BRAIN_ROT_COR             0x134u /* Quaternion CameraState.OrientationCorrection */
+#define RR_OFF_BRAIN_FOV                 0x10u  /* LensSettings.FieldOfView */
+#define RR_OFF_BRAIN_DUTCH               0x20u  /* LensSettings.Dutch */
+#define RR_OFF_BRAIN_RAW_POS             0x5Cu  /* Vector3 CameraState.RawPosition */
+#define RR_OFF_BRAIN_RAW_ROT             0x68u /* Quaternion CameraState.RawOrientation */
+#define RR_OFF_BRAIN_POS_COR             0x88u /* Vector3 CameraState.PositionCorrection */
+#define RR_OFF_BRAIN_ROT_COR             0x94u /* Quaternion CameraState.OrientationCorrection */
 
 /* Camera lock writes the input the cinematic rig reads. */
 #define RR_OFF_AIM_ROT_INPUT             0x38u  /* BattleAimTargetUpdater._playerRotationInput */

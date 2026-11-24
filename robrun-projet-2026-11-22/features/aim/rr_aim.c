@@ -2,9 +2,31 @@
  * Selection uses snapshot data; the caller decides whether to send input.
  */
 #include "rr_aim.h"
+#include "features/visibility/rr_los.h"
 #include "game/rig/rr_cham_anchors.h"
 #include "game/rig/rr_body_joints.h"
 #include "ui/menu_bridge.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
+
+static int los_default(RR_V3 a, RR_V3 b) {
+    int r = rr_los_check(a, b);
+    static DWORD last;
+    DWORD now = GetTickCount();
+    if (now - last >= 1000) {
+        last = now;
+        char st[256] = {0};
+        rr_los_debug(st, sizeof st);
+        char path[MAX_PATH];
+        const char* base = getenv("LOCALAPPDATA");
+        snprintf(path, sizeof path, "%s\\RobRunInternal\\los.log", base ? base : ".");
+        FILE* f = fopen(path, "a");
+        if (f) { fprintf(f, "res=%d %s\n", r, st); fclose(f); }
+    }
+    return r != RR_LOS_BLOCKED;
+}
 #include <math.h>
 
 RR_AIM_PICK rr_aim_pick(const RR_PLAYER* players, int count, const RR_CAMERA* camera,
@@ -24,6 +46,10 @@ RR_AIM_PICK rr_aim_pick(const RR_PLAYER* players, int count, const RR_CAMERA* ca
     const int camera_lock = config->aa_mode == 2;
     if (camera_lock && locked_addr) limit = INFINITY;
 #endif
+    /* aa_los_on gates the visibility filter: off, or without a callback,
+     * the aimbot picks through walls as before. */
+    const int los = config->aa_los_on != 0;
+    int (*vis)(RR_V3, RR_V3) = los ? (clear ? clear : los_default) : NULL;
     int group = config->aa_bone;
     for (int i = 0; i < count; ++i) {
         const RR_PLAYER* p = &players[i];
@@ -37,7 +63,7 @@ RR_AIM_PICK rr_aim_pick(const RR_PLAYER* players, int count, const RR_CAMERA* ca
         RR_V3 point;
 #ifdef RR_INTERNAL
         if (camera_lock && (!p->full_rig || !rr_aim_head_center(p, &point))) continue;
-        if (camera_lock && locked_addr && (!clear || clear(camera->pos, point)))
+        if (camera_lock && locked_addr && (!vis || vis(camera->pos, point)))
             return (RR_AIM_PICK){p, point, 0.0f, 0.0f};
         if ((!camera_lock && !rr_aim_point(p, group, camera, width, height, &point)) ||
 #else
@@ -49,8 +75,8 @@ RR_AIM_PICK rr_aim_pick(const RR_PLAYER* players, int count, const RR_CAMERA* ca
         if (!isfinite(d2) || d2 > limit) continue;
         /* Keep acquisition outside the FOV cheap. If the nearest member is
          * blocked, search the same area for another visible joint. */
-        if (clear && !clear(camera->pos,point)) {
-            if (!rr_aim_visible_point(p,group,camera,width,height,&point,clear) ||
+        if (los && !vis(camera->pos,point)) {
+            if (!rr_aim_visible_point(p,group,camera,width,height,&point,vis) ||
                 !game_w2s(camera,&point,width,height,&sx,&sy)) continue;
             dx=sx-cx; dy=sy-cy; d2=dx*dx+dy*dy;
             if (!isfinite(d2) || d2>limit) continue;

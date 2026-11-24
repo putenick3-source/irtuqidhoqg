@@ -1,0 +1,181 @@
+/* rr_il2cpp_dump.c - the static dumper cannot read metadata v39, but the game
+ * runtime already holds the parsed metadata. Query it through the public
+ * embedding API instead: field names, field offsets and static field slots
+ * come out exact for the build that is actually loaded. */
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "game/rr_il2cpp_dump.h"
+
+typedef struct Il2CppDomain Il2CppDomain;
+typedef struct Il2CppAssembly Il2CppAssembly;
+typedef struct Il2CppImage Il2CppImage;
+typedef struct Il2CppClass Il2CppClass;
+typedef struct FieldInfo FieldInfo;
+typedef struct MethodInfo MethodInfo;
+
+static HMODULE g_ga;
+static FILE* g_log;
+
+static void* api(const char* name) { return (void*)GetProcAddress(g_ga, name); }
+
+static const char* const targets[] = {
+    "WorldModel", "WorldEntitiesModel", "BattleModel", "BattleEntitiesModel", "GameModel",
+    "UnityEntry", "BattleCharacterModel", "BattleCharacterData", "BattleCharacterCommonData",
+    "BattleCharacterPrivateData", "BattleCharacterPublicData", "HealthModel", "BattleCameraModel",
+    "AimTargetModel", "PlayerRotationInputModel", "CharacterTransformModel", "TransformModel",
+    "CharacterReplicatedTransformModel", "ContainerModel", "DoorModel", "LootModel",
+    "VehicleLootModel", "CarModel", "HelicopterModel", "BattleCharacterSlotsModel",
+    "BattleCharacterSlotData", "VehicleSeatsModel", "VehicleSeatData", "CinemachineBrain",
+    "CinemachineVirtualCamera", "SensitivityModel", "GlobalModel"
+};
+static const char* const method_targets[] = { "SetRotation", "ProcessActiveCamera", "PushStateToUnityCamera" };
+
+static void out(const char* fmt, ...) {
+    va_list ap;
+    if (!g_log) return;
+    va_start(ap, fmt);
+    vfprintf(g_log, fmt, ap);
+    va_end(ap);
+    fflush(g_log);
+}
+
+void rr_il2cpp_dump(void) {
+    typedef Il2CppDomain* (*t_domain)(void);
+    typedef const Il2CppAssembly* const* (*t_asm)(const Il2CppDomain*, size_t*);
+    typedef Il2CppImage* (*t_img)(const Il2CppAssembly*);
+    typedef size_t (*t_ccount)(const Il2CppImage*);
+    typedef const Il2CppClass* (*t_cget)(const Il2CppImage*, size_t);
+    typedef const char* (*t_cname)(const Il2CppClass*);
+    typedef const char* (*t_cns)(const Il2CppClass*);
+    typedef const FieldInfo* (*t_cfields)(const Il2CppClass*, void**);
+    typedef const char* (*t_fname)(const FieldInfo*);
+    typedef size_t (*t_foff)(const FieldInfo*);
+    typedef void (*t_fstatic)(const FieldInfo*, void*);
+    typedef const MethodInfo* (*t_mget)(const Il2CppClass*, void**);
+    typedef const char* (*t_mname)(const MethodInfo*);
+    typedef void* (*t_attach)(Il2CppDomain*);
+
+    t_domain f_domain;
+    t_asm f_asm;
+    t_img f_img;
+    t_ccount f_ccount;
+    t_cget f_cget;
+    t_cname f_cname;
+    t_cns f_cns;
+    t_cfields f_cfields;
+    t_fname f_fname;
+    t_foff f_foff;
+    t_fstatic f_fstatic;
+    t_mget f_mget;
+    t_mname f_mname;
+    t_attach f_attach;
+
+    wchar_t dir[MAX_PATH];
+    wchar_t path[MAX_PATH];
+    DWORD n;
+    unsigned char* base;
+    size_t nasm = 0, a, t;
+    int missing = 0;
+
+    g_ga = GetModuleHandleW(L"GameAssembly.dll");
+    if (!g_ga) return;
+
+    n = GetEnvironmentVariableW(L"LOCALAPPDATA", dir, MAX_PATH);
+    if (n && n < MAX_PATH && swprintf_s(path, MAX_PATH, L"%ls\\RobRunInternal", dir) >= 0) {
+        CreateDirectoryW(path, NULL);
+        if (swprintf_s(path, MAX_PATH, L"%ls\\RobRunInternal\\il2cpp_fields.log", dir) >= 0)
+            g_log = _wfopen(path, L"w");
+    }
+    if (!g_log) return;
+
+    base = (unsigned char*)g_ga;
+    out("rr_il2cpp_dump  GameAssembly=%p\n", base);
+
+    f_domain  = (t_domain)api("il2cpp_domain_get");
+    f_asm     = (t_asm)api("il2cpp_domain_get_assemblies");
+    f_img     = (t_img)api("il2cpp_assembly_get_image");
+    f_ccount  = (t_ccount)api("il2cpp_image_get_class_count");
+    f_cget    = (t_cget)api("il2cpp_image_get_class");
+    f_cname   = (t_cname)api("il2cpp_class_get_name");
+    f_cns     = (t_cns)api("il2cpp_class_get_namespace");
+    f_cfields = (t_cfields)api("il2cpp_class_get_fields");
+    f_fname   = (t_fname)api("il2cpp_field_get_name");
+    f_foff    = (t_foff)api("il2cpp_field_get_offset");
+    f_fstatic = (t_fstatic)api("il2cpp_field_static_get_value");
+    f_mget    = (t_mget)api("il2cpp_class_get_methods");
+    f_mname   = (t_mname)api("il2cpp_method_get_name");
+    f_attach  = (t_attach)api("il2cpp_thread_attach");
+
+    if (!f_domain)  { out("missing export il2cpp_domain_get\n"); missing = 1; }
+    if (!f_asm)     { out("missing export il2cpp_domain_get_assemblies\n"); missing = 1; }
+    if (!f_img)     { out("missing export il2cpp_assembly_get_image\n"); missing = 1; }
+    if (!f_cget)    { out("missing export il2cpp_image_get_class\n"); missing = 1; }
+    if (!f_cname)   { out("missing export il2cpp_class_get_name\n"); missing = 1; }
+    if (!f_cfields) { out("missing export il2cpp_class_get_fields\n"); missing = 1; }
+    if (!f_fname)   { out("missing export il2cpp_field_get_name\n"); missing = 1; }
+    if (!f_foff)    { out("missing export il2cpp_field_get_offset\n"); missing = 1; }
+    if (missing) { out("done\n"); fclose(g_log); g_log = NULL; return; }
+
+    Il2CppDomain* dom = f_domain();
+    if (!dom) { out("domain not initialised yet\n"); out("done\n"); fclose(g_log); g_log = NULL; return; }
+    if (f_attach) f_attach(dom);
+
+    const Il2CppAssembly* const* asms = f_asm(dom, &nasm);
+    if (!asms) { out("no assemblies\n"); out("done\n"); fclose(g_log); g_log = NULL; return; }
+    out("%llu assemblies\n\n", (unsigned long long)nasm);
+
+    for (a = 0; a < nasm; a++) {
+        Il2CppImage* img = asms[a] ? f_img(asms[a]) : NULL;
+        size_t count = 0, i;
+        if (!img) continue;
+        if (f_ccount) count = f_ccount(img);
+        for (i = 0; i < (f_ccount ? count : 100000); i++) {
+            const Il2CppClass* k = f_cget(img, i);
+            const char* kn;
+            void* it = NULL;
+            const FieldInfo* f;
+            int hit = 0;
+            if (!k) break;
+            kn = f_cname(k);
+            if (!kn) continue;
+            for (t = 0; t < sizeof targets / sizeof *targets; t++)
+                if (strcmp(kn, targets[t]) == 0) { hit = 1; break; }
+            if (!hit) continue;
+
+            out("=== %s::%s\n", f_cns ? f_cns(k) : "", kn);
+            while ((f = f_cfields(k, &it)) != NULL) {
+                const char* fn = f_fname(f);
+                size_t off = f_foff(f);
+                if (!fn) continue;
+                if (off) out("  field %s = 0x%zX\n", fn, off);
+                else {
+                    void* v = NULL;
+                    if (f_fstatic) f_fstatic(f, &v);
+                    if (v) out("  static %s = RVA 0x%llX\n", fn,
+                               (unsigned long long)((unsigned char*)v - base));
+                    else out("  static %s = (null)\n", fn);
+                }
+            }
+            if (f_mget && f_mname) {
+                void* mit = NULL;
+                const MethodInfo* m;
+                while ((m = f_mget(k, &mit)) != NULL) {
+                    const char* mn = f_mname(m);
+                    for (t = 0; t < sizeof method_targets / sizeof *method_targets; t++)
+                        if (mn && strcmp(mn, method_targets[t]) == 0) {
+                            void* p = *(void**)m;
+                            out("  method %s = RVA 0x%llX\n", mn,
+                                p ? (unsigned long long)((unsigned char*)p - base) : 0ull);
+                        }
+                }
+            }
+            out("\n");
+        }
+    }
+    out("done\n");
+    fclose(g_log);
+    g_log = NULL;
+}

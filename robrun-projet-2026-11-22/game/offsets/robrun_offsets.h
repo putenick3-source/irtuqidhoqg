@@ -15,7 +15,7 @@
 #define RR_OFF_WORLD_VEHICLES       0x60u   /* WorldModel.Vehicles */
 #define RR_OFF_VWORLD_PARTIES       0x28u   /* VehiclesWorldModel._parties */
 #define RR_OFF_PARTIES_BY_ENTITY    0x18u   /* Parties._partiesByEntity */
-#define RR_OFF_PARTY_ENTITIES       0x10u   /* PartyModel._entities (HashSet<int>) */
+#define RR_OFF_PARTY_ENTITIES    0x38u   /* PartyModel._actualPartyMemberModels */
 #define RR_OFF_WEM_BATTLE_CHARS     0x18u   /* WorldEntitiesModel._battleCharacters */
 #define RR_OFF_WEM_VEHICLES         0x58u   /* WorldEntitiesModel._vehicles */
 #define RR_OFF_CHAR_ID              0x38u   /* BattleCharacterModel.Id */

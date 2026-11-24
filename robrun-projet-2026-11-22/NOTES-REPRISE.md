@@ -1,36 +1,16 @@
-﻿# Reprise du chantier menu RobRun
+# Reprise RobRunInternal
 
-## Etat au 2026-11-22
-BUILD_OK. Le DLL est dans build\RobRunInternal.dll.
+Lire docs/00-INDEX.md en premier, puis dans l ordre indique.
 
-## Cause racine corrigee
-Les onglets ecrivaient dans BR_Config (*br_get()) alors que draw() fait
-pull() -> Render() -> push() : push() reecrivait BR_Config depuis la struct
-Settings, donc chaque toggle etait annule dans la meme frame.
-Desormais les onglets ecrivent dans eternal::Settings via l'accesseur
-eternal_ui::settings() (declare dans ui/eternal/eternal_state.hpp), et c'est
-push() qui persiste vers BR_Config.
+Etat : build OK, ESP fonctionnel, pipeline d offsets operationnel (applied=197
+diff=0), visible check en cours de diagnostic, skip party bloque faute de
+joueur dans le groupe, healthbar/armor/crosshair/watermark/config casses,
+robrun_chain.txt absent.
 
-## Architecture des onglets
-Tab enum = Aim, Visual, Loot, World, Misc, Config.
-draw.cpp dispatche les 6 via Canvas ; components.cpp inclut les .cpp.
-eternal_menu.cpp est compile mais mort.
-Canvas::Check prend bool&, Slider prend int&, Dropdown prend
-(label, int&, std::vector<const char*>, bool, unsigned int*).
+En cours : instrumentation los.log dans rr_aim.c (los_default + ligne
+inconditionnelle dans rr_aim_pick). But : savoir si los=0 (synchro menu) ou
+res=-1 permanent (pipeline LOS en UNKNOWN, a remplacer par Physics.Linecast).
+Details et plan dans docs/03.
 
-## Reste a faire
-- Verifier en jeu : armor, health bar, clan tag, police tag, watermark,
-  rayon des fleches (pilote aa_fov_px), remplissage Loot/World.
-- Verifier que le popup d'ID duplique ne revient pas.
-- Restaurer le dossier EasyAntiCheat et les services pour jouer sans le cheat.
-
-## Build
-$r = (Get-Item -LiteralPath "C:\Users\mick la sauterelle\Downloads\robrunnnnn\extras_[unknowncheats.me]_").FullName
-Set-Location -LiteralPath $r
-cmd /c "`"$r\build_internal.bat`""
-
-## Environnement machine
-- VS 18 Community, C++20 x64, /MT /GS-, module mappe manuellement.
-- HVCI = 0 et VulnerableDriverBlocklistEnable = 0.
-- PowerShell admin, Steam lance depuis cette session.
-- Chemin avec crochets : utiliser Get-Item -LiteralPath.
+Regles : PowerShell uniquement, une commande par message ou tout en un bloc,
+jamais d edition manuelle, sauvegarde .modifs-backup-* avant tout patch.

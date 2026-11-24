@@ -22,6 +22,9 @@
 #include "memory/rr_mem.h"
 #include "rr_unity.h"
 #include "memory/rr_chain.h"
+#include "game/rr_buildid.h"
+#include "game/rr_il2cpp_dump.h"
+#include "game/rr_autoupdate.h"
 #include "ui/menu_bridge.h"
 #include "rr_game.h"
 #include "rr_threads.h"
@@ -4799,6 +4802,8 @@ int game_init(void) {
     game_phase_set(GAME_PHASE_INIT_RUNTIME);
     runtime_load();
     chain_load("robrun_chain.txt");
+    if (rr_buildid_check(0, 0) == -1) rr_autoupdate_run();
+    rr_il2cpp_dump();
 
     if (!g_cs_ready) { InitializeCriticalSection(&g_cache_cs); g_cs_ready = 1; }
     xf_pool_init();
@@ -5078,6 +5083,23 @@ typedef struct {
     int32_t  ids[RR_PARTY_MAX];
 } PARTY_CACHE;
 
+
+static void pdiag(int code, int n) {
+    static DWORD last;
+    DWORD now = GetTickCount();
+    wchar_t dir[MAX_PATH], path[MAX_PATH];
+    FILE* f;
+    DWORD k;
+    if (now - last < 1000) return;
+    last = now;
+    k = GetEnvironmentVariableW(L"LOCALAPPDATA", dir, MAX_PATH);
+    if (!k || k >= MAX_PATH) return;
+    _snwprintf_s(path, MAX_PATH, _TRUNCATE, L"%ls\\RobRunInternal\\party.log", dir);
+    _wfopen_s(&f, path, L"a");
+    if (!f) return;
+    fprintf(f, "code=%d n=%d\n", code, n);
+    fclose(f);
+}
 static PARTY_CACHE g_party;
 
 static void party_refresh(uint64_t world, int32_t local_id) {
@@ -5088,16 +5110,17 @@ static void party_refresh(uint64_t world, int32_t local_id) {
     g_party.local = local_id;
     g_party.at = now;
     g_party.n = 0;
-    if (!PL(world) || !local_id) return;
+    if (!PL(world)) { pdiag(9, 0); return; }
+    if (!local_id) { pdiag(10, 0); return; }
 
     const uint64_t veh = rr_u64(world + RR_OFF_WORLD_VEHICLES);
-    if (!u_is(veh, "VehiclesWorldModel")) return;
+    if (!u_is(veh, "VehiclesWorldModel")) { pdiag(2, 0); return; }
     const uint64_t parties = rr_u64(veh + RR_OFF_VWORLD_PARTIES);
-    if (!u_is(parties, "Parties")) return;
+    if (!u_is(parties, "Parties")) { pdiag(3, 0); return; }
     const uint64_t dict = rr_u64(parties + RR_OFF_PARTIES_BY_ENTITY);
     int n = 0, stride = 0;
     uint64_t entries = 0;
-    if (!u_dict(dict, &n, &entries, &stride) || n > 4096 || stride != 0x18) return;
+    if (!u_dict(dict, &n, &entries, &stride) || n > 4096 || stride != 0x18) { pdiag(4, 0); return; }
 
     uint64_t mine = 0;
     for (int i = 0; i < n && !mine; ++i) {
@@ -5109,16 +5132,22 @@ static void party_refresh(uint64_t world, int32_t local_id) {
         memcpy(&pm, e + 0x10, sizeof pm);
         if (key == local_id && u_is(pm, "PartyModel")) mine = pm;
     }
-    if (!mine) return;
-    for (int i = 0; i < n && g_party.n < RR_PARTY_MAX; ++i) {
+    if (!mine) { pdiag(5, 0); return; }
+
+    /* _partiesByEntity is keyed by party id, not by character: the member
+     * entity ids live in the party own entity-keyed map. */
+    const uint64_t members = rr_u64(mine + RR_OFF_PARTY_ENTITIES);
+    int mn = 0, mstride = 0;
+    uint64_t mentries = 0;
+    if (!u_dict(members, &mn, &mentries, &mstride) || mn > 4096 || mstride != 0x18) { pdiag(7, 0); return; }
+    for (int i = 0; i < mn && g_party.n < RR_PARTY_MAX; ++i) {
         uint8_t e[0x18];
         int32_t key;
-        uint64_t pm;
-        if (!rr_read(entries + (uint64_t)i * 0x18, e, sizeof e)) continue;
+        if (!rr_read(mentries + (uint64_t)i * 0x18, e, sizeof e)) continue;
         memcpy(&key, e + 8, sizeof key);
-        memcpy(&pm, e + 0x10, sizeof pm);
-        if (key != local_id && pm == mine) g_party.ids[g_party.n++] = key;
+        if (key != local_id) g_party.ids[g_party.n++] = key;
     }
+    pdiag(8, g_party.n);
 }
 
 static int party_has(int32_t id) {

@@ -10,6 +10,7 @@ extern "C" {
 int rr_los_start(void);
 void rr_los_stop(void);
 int rr_los_check(RR_V3 start, RR_V3 end);
+int rr_los_debug(char* out, int cap);
 #ifdef __cplusplus
 }
 #endif

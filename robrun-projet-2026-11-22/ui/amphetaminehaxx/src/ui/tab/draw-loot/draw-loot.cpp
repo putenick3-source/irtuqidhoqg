@@ -37,10 +37,6 @@ void DrawLoot(Canvas& c, UiState& state) {
     tg("exotic", s.loot_t_exotic);
     c.EndGroup();
     c.BeginColumn(true);
-    c.BeginGroup("vehicles");
-    tg("vehicle markers", s.vehicle_markers);
-    tg("occupants", s.vehicle_occupants);
-    c.EndGroup();
     c.BeginGroup("vehicle chams");
     tg("vehicle chams", s.vehicle_chams);
     c.Dropdown("style", s.vehicle_chams_style, g_loot_cham_styles);
