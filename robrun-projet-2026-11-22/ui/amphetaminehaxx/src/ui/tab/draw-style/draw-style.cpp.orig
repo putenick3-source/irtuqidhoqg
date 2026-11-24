@@ -1,0 +1,90 @@
+﻿#include "ui/tab/draw-style/draw-style.hpp"
+#include "ui/state/theme/theme.hpp"
+#include "rr_controls.hpp"
+#include "game/rr_game.h"
+
+namespace ui
+{
+    namespace
+    {
+        struct Preset
+        {
+            ImVec4 bg, panel, alt, border, text, dim, accent, accent_dim;
+        };
+
+        void paint(const Preset& p)
+        {
+            theme.background_color = p.bg;
+            theme.group_color = p.panel;
+            theme.border_color = p.border;
+            theme.text_color = p.text;
+            theme.control_color = p.alt;
+            theme.track_color = p.alt;
+            theme.checkbox_outline_color = p.border;
+            theme.checkbox_off_color = p.alt;
+            theme.checkbox_on_color = p.accent;
+            theme.checkbox_on_shade_color = p.accent_dim;
+            theme.checkbox_text_color = p.text;
+            theme.slider_border_color = p.border;
+            theme.slider_track_bottom_color = p.bg;
+            theme.slider_fill_shade_color = p.accent_dim;
+            theme.slider_label_color = p.text;
+            theme.slider_value_color = p.dim;
+            theme.slider_button_text_color = p.text;
+            theme.control_border_color = p.border;
+            theme.control_text_color = p.text;
+            theme.control_arrow_color = p.accent;
+            theme.button_text_color = p.text;
+            theme.group_black_line_color = p.bg;
+            theme.tab_text_color = p.text;
+            theme.tab_idle_line_color = p.border;
+            theme.tab_idle_line_bottom_color = p.alt;
+            theme.tab_line_shadow_color = p.bg;
+            theme.tab_line_black_color = p.bg;
+            theme.outer_shadow_color = p.bg;
+            theme.outer_outer_line_color = p.border;
+            theme.outer_between_color = p.panel;
+            theme.outer_inner_line_color = p.border;
+            theme.outer_face_color = p.alt;
+            theme.panel_outer_line_color = p.border;
+            theme.panel_between_color = p.panel;
+            theme.panel_inner_line_color = p.border;
+            theme.panel_inside_color = p.bg;
+        }
+
+        void apply_preset(int id)
+        {
+            if (id == 1)
+                paint({ {0.063f,0.055f,0.047f,1.f}, {0.090f,0.078f,0.067f,1.f}, {0.118f,0.102f,0.086f,1.f}, {0.188f,0.165f,0.137f,1.f}, {0.922f,0.894f,0.855f,1.f}, {0.588f,0.541f,0.478f,1.f}, {0.910f,0.588f,0.235f,1.f}, {0.471f,0.290f,0.110f,1.f} });
+            else if (id == 2)
+                paint({ {0.051f,0.047f,0.071f,1.f}, {0.075f,0.067f,0.102f,1.f}, {0.098f,0.086f,0.133f,1.f}, {0.169f,0.149f,0.227f,1.f}, {0.894f,0.878f,0.933f,1.f}, {0.549f,0.518f,0.620f,1.f}, {0.698f,0.376f,0.910f,1.f}, {0.345f,0.180f,0.471f,1.f} });
+            else
+                paint({ {0.055f,0.059f,0.067f,1.f}, {0.078f,0.086f,0.098f,1.f}, {0.102f,0.114f,0.129f,1.f}, {0.157f,0.173f,0.196f,1.f}, {0.886f,0.902f,0.922f,1.f}, {0.510f,0.541f,0.580f,1.f}, {0.220f,0.714f,0.769f,1.f}, {0.118f,0.384f,0.424f,1.f} });
+        }
+    }
+
+    void DrawStyle(Canvas& c, UiState& state)
+    {
+        auto& b = *br_get();
+        using amphetaminehaxx::check;
+        c.BeginColumn(false);
+        c.BeginGroup("hud");
+        check(c, "filigrane", b.hud_watermark);
+        check(c, "curseur personnalise", b.hud_cursor);
+        amphetaminehaxx::theme_controls(c, state);
+        c.EndGroup();
+        c.BeginGroup("themes");
+        bool p0 = false, p1 = false, p2 = false;
+        c.Button("Graphite", p0);
+        c.Button("Ambre", p1);
+        c.Button("Violet", p2);
+        if (p0) apply_preset(0);
+        if (p1) apply_preset(1);
+        if (p2) apply_preset(2);
+        c.EndGroup();
+        c.BeginColumn(true);
+        c.BeginGroup("profils");
+        amphetaminehaxx::profiles(c);
+        c.EndGroup();
+    }
+}

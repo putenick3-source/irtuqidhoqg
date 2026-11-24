@@ -1,0 +1,26 @@
+RobRunESP selftest
+  [PASS] config round trip saves radar, aim and colors
+  [PASS] aim bind gates hold, toggle and always without touching the master
+  [PASS] config round trip saves loot and vehicle chams switches
+  [PASS] config round trip saves self ESP switch
+  [PASS] loot tier filters round trip and map each rarity
+  [PASS] config save replaces the previous profile
+  [PASS] config imports legacy aim settings and retains unspecified values
+  [PASS] config prefers current keys over legacy aliases
+  [PASS] IL2CPP object header is 16 bytes
+  [PASS] Il2CppClass.static_fields at 0xB8 (metadata 39 layout)
+  [PASS] Il2CppString length/char layout
+  [PASS] Dictionary _entries/_count layout
+  [PASS] BattleCharacterModel.Transform from dump (0x58)
+  [PASS] WorldEntitiesModel._battleCharacters from dump (0x18)
+  [PASS] WorldModel.WorldEntitiesModel from dump (0x38)
+  [PASS] BattleCameraModel Position/Orientation
+  [PASS] world point on the axis projects to the screen centre
+  [PASS] 45 deg right ray lands where the aspect ratio puts it
+  [PASS] ray on the horizontal edge lands on the right border
+  [PASS] 45 deg up ray lands on the top edge
+  [PASS] point behind the camera is rejected
+  [PASS] chain file parsed two symbols
+  [PASS] chain symbols are registered
+
+SELFTEST OK (0 failures)

@@ -1,0 +1,28 @@
+﻿#include "ui/tab/draw-style/draw-style.hpp"
+#include "ui/theme/theme.hpp"
+#include "rr_controls.hpp"
+#include "game/rr_game.h"
+
+namespace ui {
+void DrawStyle(Canvas& c, UiState& state) {
+    auto& b = *br_get();
+    using amphetaminehaxx::check;
+    using amphetaminehaxx::color;
+    (void)state;
+    c.BeginColumn(false);
+    c.BeginGroup("interface");
+    check(c,"filigrane",b.hud_watermark);
+    check(c,"curseur personnalise",b.hud_cursor);
+    amphetaminehaxx::theme_controls(c,state);
+    c.EndGroup();
+    c.BeginGroup("themes");
+    if (c.Button("Graphite")) apply_theme(0);
+    if (c.Button("Ambre")) apply_theme(1);
+    if (c.Button("Violet")) apply_theme(2);
+    c.EndGroup();
+    c.BeginColumn(true);
+    c.BeginGroup("profils");
+    amphetaminehaxx::profiles(c);
+    c.EndGroup();
+}
+}

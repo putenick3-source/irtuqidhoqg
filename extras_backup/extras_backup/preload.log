@@ -1,0 +1,4 @@
+RobRunESP pre-load inject
+[preload] title  C:\Program Files (x86)\Steam\steamapps\common\Rob Run\ROB RUN.exe
+[preload] module C:\Users\FATAL\AppData\Local\Temp\opencode\rr_stage\dxgihelper.dll
+[preload] pid 5276, stub thread 4112; module loads ~4 s after launch

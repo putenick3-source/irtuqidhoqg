@@ -1,0 +1,164 @@
+RobRunESP probe
+[probe] pid 11920
+[probe] GameAssembly.dll base=7FFABF400000 size=8FDC000
+[probe] image base=7FF60B650000
+[probe] loaded modules: 140
+[probe] mod ROB RUN.exe                                  7FF60B650000 A6000
+[probe] mod ntdll.dll                                    7FFBE95D0000 26C000
+[probe] mod KERNEL32.DLL                                 7FFBE7AC0000 CB000
+[probe] mod KERNELBASE.dll                               7FFBE6C70000 409000
+[probe] mod UnityPlayer.dll                              7FFAC83E0000 2426000
+[probe] mod USER32.dll                                   7FFBE7860000 1DE000
+[probe] mod win32u.dll                                   7FFBE6AF0000 27000
+[probe] mod GDI32.dll                                    7FFBE8610000 2B000
+[probe] mod gdi32full.dll                                7FFBE69C0000 129000
+[probe] mod msvcp_win.dll                                7FFBE7080000 A3000
+[probe] mod ucrtbase.dll                                 7FFBE7130000 14C000
+[probe] mod ole32.dll                                    7FFBE9010000 199000
+[probe] mod combase.dll                                  7FFBE91B0000 3A5000
+[probe] mod RPCRT4.dll                                   7FFBE7290000 118000
+[probe] mod SHLWAPI.dll                                  1658A760000 68000
+[probe] mod SETUPAPI.dll                                 7FFBE7D60000 487000
+[probe] mod msvcrt.dll                                   7FFBE7440000 A9000
+[probe] mod ADVAPI32.dll                                 7FFBE8540000 BC000
+[probe] mod sechost.dll                                  7FFBE83E0000 A8000
+[probe] mod SHELL32.dll                                  7FFBE8670000 7B0000
+[probe] mod OLEAUT32.dll                                 7FFBE7BB0000 DA000
+[probe] mod IMM32.dll                                    7FFBE7D20000 31000
+[probe] mod CRYPT32.dll                                  7FFBE6830000 17E000
+[probe] mod WS2_32.dll                                   7FFBE73B0000 80000
+[probe] mod VERSION.dll                                  7FFBDDAF0000 B000
+[probe] mod OPENGL32.dll                                 7FFB478B0000 10C000
+[probe] mod WINMM.dll                                    7FFBD9320000 36000
+[probe] mod IPHLPAPI.DLL                                 7FFBE4DA0000 33000
+[probe] mod WINHTTP.dll                                  7FFBDFB60000 123000
+[probe] mod bcrypt.dll                                   7FFBE6650000 2A000
+[probe] mod HID.DLL                                      7FFBE4A40000 F000
+[probe] mod d3d11.dll                                    7FFBE26F0000 25F000
+[probe] mod dxgi.dll                                     7FFBE3840000 143000
+[probe] mod UIAutomationCore.DLL                         7FFBAD2A0000 420000
+[probe] mod dwmapi.dll                                   7FFBE39E0000 2E000
+[probe] mod GLU32.dll                                    7FFBD2250000 38000
+[probe] mod powrprof.dll                                 7FFBE65C0000 5E000
+[probe] mod dxcore.dll                                   7FFBE3A30000 4A000
+[probe] mod GameOverlayRenderer64.dll                    7FFB14B00000 1D3000
+[probe] mod PSAPI.DLL                                    7FFBE9560000 8000
+[probe] mod CFGMGR32.dll                                 7FFBE62E0000 52000
+[probe] mod UMPDC.dll                                    7FFBE65A0000 15000
+[probe] mod kernel.appcore.dll                           7FFBE5410000 1B000
+[probe] mod bcryptPrimitives.dll                         1658EAB0000 AC000
+[probe] mod clbcatq.dll                                  7FFBE8EC0000 AF000
+[probe] mod wbemprox.dll                                 7FFBCF940000 12000
+[probe] mod wbemcomn.dll                                 7FFBCF8B0000 86000
+[probe] mod shcore.dll                                   7FFBE7760000 F8000
+[probe] mod wbemsvc.dll                                  7FFBCEF60000 15000
+[probe] mod fastprox.dll                                 7FFBCEF80000 F5000
+[probe] mod amsi.dll                                     7FFBD5F40000 1D000
+[probe] mod windows.storage.dll                          1668ED70000 8C0000
+[probe] mod profapi.dll                                  7FFBE6680000 29000
+[probe] mod GameAssembly.dll                             7FFABF400000 8FDC000
+[probe] mod wintypes.dll                                 7FFBDF960000 16A000
+[probe] mod dbghelp.dll                                  7FFBD6AD0000 24C000
+[probe] mod baselib.dll                                  7FFB4ACE0000 3C000
+[probe] mod CoreMessaging.dll                            7FFBE30F0000 12D000
+[probe] mod secur32.dll                                  7FFBE35F0000 D000
+[probe] mod SSPICLI.DLL                                  7FFBE56D0000 4A000
+[probe] mod MSCTF.dll                                    7FFBE75F0000 15C000
+[probe] mod directxdatabasehelper.dll                    7FFBDF220000 5F000
+[probe] mod nvldumdx.dll                                 7FFBCC7E0000 C5000
+[probe] mod msasn1.dll                                   7FFBE5D40000 13000
+[probe] mod cryptnet.dll                                 7FFBD7E90000 3B000
+[probe] mod cryptbase.dll                                7FFBE5CE0000 C000
+[probe] mod wldp.dll                                     7FFBE5DC0000 70000
+[probe] mod drvstore.dll                                 7FFBD7D10000 17B000
+[probe] mod devobj.dll                                   7FFBE62A0000 2F000
+[probe] mod wintrust.dll                                 7FFBE6BE0000 83000
+[probe] mod imagehlp.dll                                 7FFBE8640000 20000
+[probe] mod CRYPTSP.dll                                  7FFBE5CC0000 1B000
+[probe] mod rsaenh.dll                                   7FFBE5370000 39000
+[probe] mod nvgpucomp64.dll                              7FFBBF880000 4F57000
+[probe] mod NvMemMapStoragex.dll                         7FFBC9B30000 13B000
+[probe] mod nvwgf2umx.dll                                7FFBB9C60000 53A8000
+[probe] mod nvppex.dll                                   7FFBC8760000 725000
+[probe] mod MMDevApi.dll                                 7FFBD9B30000 9A000
+[probe] mod AUDIOSES.DLL                                 7FFBD2ED0000 1B4000
+[probe] mod resourcepolicyclient.dll                     7FFBE3DB0000 14000
+[probe] mod sentry.DLL                                   7FFACAA20000 292000
+[probe] mod mswsock.dll                                  7FFBE59D0000 6B000
+[probe] mod WINNSI.DLL                                   7FFBE37F0000 E000
+[probe] mod NSI.dll                                      7FFBE7BA0000 A000
+[probe] mod dhcpcsvc6.DLL                                7FFBDE580000 1E000
+[probe] mod dhcpcsvc.DLL                                 7FFBDE550000 25000
+[probe] mod ntmarta.dll                                  7FFBE5540000 36000
+[probe] mod DNSAPI.dll                                   7FFBE4E30000 14C000
+[probe] mod DSPARSE.dll                                  7FFBE57B0000 D000
+[probe] mod napinsp.dll                                  7FFBB02D0000 18000
+[probe] mod Windows.Gaming.Input.dll                     7FFBD8130000 DA000
+[probe] mod winrnr.dll                                   7FFBB15F0000 13000
+[probe] mod inputhost.dll                                7FFBACF90000 1EA000
+[probe] mod twinapi.appcore.dll                          7FFBD7ED0000 250000
+[probe] mod nlansp_c.dll                                 7FFBB15C0000 27000
+[probe] mod wshbth.dll                                   7FFBD8E90000 16000
+[probe] mod dcomp.dll                                    7FFBE2960000 234000
+[probe] mod Microsoft.Internal.WarpPal.dll               7FFBE16F0000 1A000
+[probe] mod fwpuclnt.dll                                 7FFBDF060000 86000
+[probe] mod textinputframework.dll                       7FFBA11A0000 146000
+[probe] mod gpapi.dll                                    7FFBE5A40000 25000
+[probe] mod AkUnitySoundEngine.dll                       7FFABF090000 368000
+[probe] mod steam_api64.dll                              7FFB33FF0000 50000
+[probe] mod steamclient64.dll                            7FFB211A0000 19EC000
+[probe] mod tier0_s64.dll                                7FFB33360000 30C000
+[probe] mod vstdlib_s64.dll                              7FFB332D0000 83000
+[probe] mod AkConvolutionReverb.dll                      7FFB30020000 45000
+[probe] mod AkMeter.dll                                  7FFB401F0000 2B000
+[probe] mod AkSynthOne.dll                               7FFB343E0000 2F000
+[probe] mod MasteringSuite.dll                           7FFB1B4C0000 44000
+[probe] mod AkSidechain.dll                              7FFB342E0000 2C000
+[probe] mod Tempest3dAudio.dll                           7FFB19670000 4B000
+[probe] mod CrankcaseAudioREVModelPlayer.dll             7FFB15D60000 41000
+[probe] mod Windows.UI.dll                               7FFBCF570000 15B000
+[probe] mod EOSSDK-Win64-Shipping.dll                    7FFABCAF0000 1354000
+[probe] mod MSVCP140.dll                                 7FFBCEB20000 9D000
+[probe] mod VCRUNTIME140.dll                             7FFBD5F70000 2C000
+[probe] mod VCRUNTIME140_1.dll                           7FFBD5FA0000 C000
+[probe] mod schannel.DLL                                 7FFBE5240000 CB000
+[probe] mod ncrypt.dll                                   7FFBE5F10000 30000
+[probe] mod NTASN1.dll                                   7FFBE5EC0000 3F000
+[probe] mod ncryptsslp.dll                               7FFBBF0E0000 48000
+[probe] mod xaudio2_9redist.dll                          7FFABCA10000 D3000
+[probe] mod AVRT.dll                                     7FFBDE840000 B000
+[probe] mod xaudio2_9.dll                                7FFB156A0000 94000
+[probe] mod DSOUND.dll                                   7FFB380D0000 94000
+[probe] mod ResampleDmo.DLL                              7FFB34580000 B6000
+[probe] mod winmmbase.dll                                7FFB36A60000 31000
+[probe] mod msdmo.dll                                    7FFB38670000 E000
+[probe] mod wdmaud.drv                                   7FFB344D0000 47000
+[probe] mod wdmaud2.drv                                  7FFB34480000 25000
+[probe] mod msacm32.drv                                  7FFB34460000 F000
+[probe] mod MSACM32.dll                                  7FFB34430000 21000
+[probe] mod midimap.dll                                  7FFB34410000 C000
+[probe] mod enet.dll                                     7FFB148B0000 4E000
+[probe] mod lib_burst_generated.dll                      7FFABC930000 D5000
+[probe] mod PROPSYS.dll                                  7FFBE1440000 F4000
+[probe] mod Wevtapi.dll                                  7FFBE1170000 59000
+[probe] mod CoreUIComponents.dll                         7FFBDE260000 2ED000
+[probe] mod wtdccm.dll                                   7FFBC79F0000 11000
+[probe] anticheat modules present: 0
+[probe] UnityEntry: validated world=169B4288000 battle=169B9297F00 camera=169B93560E0
+[probe] chain symbols: 0
+  static WorldEntitiesModel     rva=81D0710 -> 165BF4570F8 (<bad name>)
+  static WorldModel             rva=81D36C8 -> 2001A9C1 (<no class>)
+  static BattleCameraModel      rva=81CB420 -> 165B24A6A80 (ˆ(°e)
+  static BattleCharacterModel   rva=8196748 -> 165B21D9490 ("(°e)
+[probe] game_init: world found
+[probe] status: instance scan: 6 characters, camera=model timing=unavailable
+[probe] prim offset=0x0 dict offset=0x10
+[probe] players=6 camera=valid
+  #0   id=29801 pos=(-387.94, 1.49, -36.06) dist=1.9 dead=0
+  #1   id=29802 pos=(-387.78, 1.49, -18.69) dist=17.9 dead=0
+  #2   id=29860 pos=(-419.62, 2.24, 104.97) dist=145.3 dead=0
+  #3   id=28860 pos=(-387.37, 1.49, -36.53) dist=1.5 dead=0
+  #4   id=28442 pos=(-387.63, 1.49, -29.38) dist=7.3 dead=0
+  #5   id=29555 pos=(-388.88, 1.46, -18.13) dist=18.6 dead=0
+[probe] player[0] class=BattleCharacterModel
+[probe] player[0] -> BattleCameraModel hits: 0

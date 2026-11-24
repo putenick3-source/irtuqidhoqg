@@ -1,0 +1,4 @@
+#include "app_resources.h"
+IDR_ESP_FONT RCDATA "ui/resources/cozette-vector.ttf"
+IDR_ESP_FONT_LICENSE RCDATA "ui/resources/Cozette-LICENSE.txt"
+1 24 "ui/resources/app.manifest"

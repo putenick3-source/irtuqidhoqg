@@ -1,0 +1,69 @@
+﻿#include "ui/frame/draw-brand/draw-brand.hpp"
+#include "ui/types/canvas/canvas.hpp"
+#include "ui/types/ui-state/ui-state.hpp"
+#include "../../state/theme/theme.hpp"
+#include <algorithm>
+#include <cmath>
+#include <cfloat>
+#include <cstdio>
+#include <cstring>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include "imgui.h"
+
+namespace ui
+{
+    void DrawBrand(Canvas& c, const UiState& s)
+    {
+        if (!s.brand_font)
+            return;
+
+        const double time = ImGui::GetTime();
+        const float phase = static_cast<float>(std::fmod(time, 3.2) / 3.2);
+        const char* title = "ROB RUN";
+
+        float brand_width = 0.0f;
+        for (int i = 0; title[i]; ++i)
+        {
+            const char glyph[] = { title[i], '\0' };
+            brand_width += s.brand_font->CalcTextSizeA(15.0f, FLT_MAX, 0.0f, glyph).x;
+        }
+
+        const ImVec2 origin(std::round(s.window_pos.x + 261.0f - brand_width * 0.5f), std::round(s.window_pos.y - 7.0f));
+        float x = origin.x;
+        float head = 0.0f;
+        const ImVec4 c_dim = ImGui::ColorConvertU32ToFloat4(text_dim_color);
+        const ImVec4 c_acc = ImGui::ColorConvertU32ToFloat4(accent_color);
+
+        const ImDrawListFlags old_flags = c.draw->Flags;
+        c.draw->Flags &= ~ImDrawListFlags_AntiAliasedLines;
+        ImGui::PushFont(s.brand_font);
+        for (int i = 0; title[i]; ++i)
+        {
+            const float local = std::clamp((phase - i * 0.04f) * 4.0f, 0.0f, 1.0f);
+            head = local;
+            const ImVec4 mixed(
+                c_dim.x + (c_acc.x - c_dim.x) * local,
+                c_dim.y + (c_acc.y - c_dim.y) * local,
+                c_dim.z + (c_acc.z - c_dim.z) * local,
+                c.alpha
+            );
+            const ImU32 col = ImGui::ColorConvertFloat4ToU32(mixed);
+            const ImU32 outline = IM_COL32(0, 0, 0, static_cast<int>(c.alpha * 255.0f));
+            const char glyph[] = { title[i], '\0' };
+            const ImVec2 pos(std::round(x), std::round(origin.y));
+            c.draw->AddText(s.brand_font, 15.0f, ImVec2(pos.x - 1.0f, pos.y), outline, glyph);
+            c.draw->AddText(s.brand_font, 15.0f, ImVec2(pos.x + 1.0f, pos.y), outline, glyph);
+            c.draw->AddText(s.brand_font, 15.0f, ImVec2(pos.x, pos.y - 1.0f), outline, glyph);
+            c.draw->AddText(s.brand_font, 15.0f, ImVec2(pos.x, pos.y + 1.0f), outline, glyph);
+            c.draw->AddText(s.brand_font, 15.0f, pos, col, glyph);
+            x += s.brand_font->CalcTextSizeA(15.0f, FLT_MAX, 0.0f, glyph).x;
+        }
+        const float w = brand_width * (0.35f + 0.65f * head);
+        const ImU32 line_col = ImGui::ColorConvertFloat4ToU32(ImVec4(c_acc.x, c_acc.y, c_acc.z, c.alpha));
+        c.draw->AddLine(ImVec2(origin.x, origin.y + 17.0f), ImVec2(origin.x + w, origin.y + 17.0f), line_col, 1.0f);
+        ImGui::PopFont();
+        c.draw->Flags = old_flags;
+    }
+}
